@@ -1,0 +1,411 @@
+{
+  "info": {
+    "name": "QueuePulse - Staff Queue API Endpoints",
+    "description": "Postman Collection covering all Phase 5 Staff Queue API contracts, success responses, and documented error scenarios per Section 15.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "testQueueId",
+      "value": "b0000000-0000-0000-0000-000000000001",
+      "type": "string"
+    },
+    {
+      "key": "testTokenId",
+      "value": "c0000000-0000-0000-0000-000000000001",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Queues",
+      "item": [
+        {
+          "name": "GET /api/queues - Success (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/queues",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/queues - Unauthenticated (401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/queues",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/queues - Success (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"General Consultation\",\n  \"default_service_minutes\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/queues - Validation Failed (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"A\",\n  \"default_service_minutes\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/queues - Duplicate Name Conflict (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"General Consultation\",\n  \"default_service_minutes\": 5\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Queue Configuration",
+      "item": [
+        {
+          "name": "PATCH /api/queues/:id - Success (200)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"General OPD Chamber 1\",\n  \"default_service_minutes\": 6,\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/queues/:id - Validation Failed (400)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/queues/:id - Not Found or Other Org (404)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Queue\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/00000000-0000-0000-0000-000000000000",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "00000000-0000-0000-0000-000000000000"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "GET /api/queues/:id/dashboard - Success (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}", "dashboard"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/queues/:id/dashboard - Not Found (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/00000000-0000-0000-0000-000000000000/dashboard",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "00000000-0000-0000-0000-000000000000", "dashboard"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Token Issuing",
+      "item": [
+        {
+          "name": "POST /api/queues/:id/tokens - Success (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"01712345678\",\n  \"request_id\": \"d0000000-0000-0000-0000-000000000001\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}/tokens",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}", "tokens"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/queues/:id/tokens - Invalid Phone (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"12345\",\n  \"request_id\": \"d0000000-0000-0000-0000-000000000002\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}/tokens",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}", "tokens"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Advance & Skip",
+      "item": [
+        {
+          "name": "POST /api/queues/:id/advance - Next Success (200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"next\",\n  \"expected_serving_token_id\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}/advance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}", "advance"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/queues/:id/advance - Skip Success (200)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"skip\",\n  \"expected_serving_token_id\": \"{{testTokenId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}/advance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}", "advance"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/queues/:id/advance - Skip With Nothing Serving (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"skip\",\n  \"expected_serving_token_id\": null\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}/advance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}", "advance"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/queues/:id/advance - Stale State Conflict (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"next\",\n  \"expected_serving_token_id\": \"ffffffff-ffff-ffff-ffff-ffffffffffff\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}/advance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}", "advance"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Token Cancellation",
+      "item": [
+        {
+          "name": "POST /api/queues/:id/tokens/:tokenId/cancel - Success (200)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}/tokens/{{testTokenId}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}", "tokens", "{{testTokenId}}", "cancel"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/queues/:id/tokens/:tokenId/cancel - Token Not Waiting (409)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}/tokens/{{testTokenId}}/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}", "tokens", "{{testTokenId}}", "cancel"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/queues/:id/tokens/:tokenId/cancel - Not Found (404)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/queues/{{testQueueId}}/tokens/00000000-0000-0000-0000-000000000000/cancel",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "queues", "{{testQueueId}}", "tokens", "00000000-0000-0000-0000-000000000000", "cancel"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

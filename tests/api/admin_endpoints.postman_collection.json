@@ -1,0 +1,286 @@
+{
+  "info": {
+    "name": "QueuePulse - Admin API Endpoints",
+    "description": "Postman Collection covering all Phase 4 Admin API contracts, success responses, and documented error scenarios per Section 15.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "testOrgId",
+      "value": "a0000000-0000-0000-0000-000000000001",
+      "type": "string"
+    },
+    {
+      "key": "testStaffId",
+      "value": "staff-id-uuid",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Overview",
+      "item": [
+        {
+          "name": "GET /api/admin/overview - Success (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "overview"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/admin/overview - Unauthenticated (401)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "overview"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "GET /api/admin/overview - Forbidden Non-Admin (403)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/overview",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "overview"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Organizations",
+      "item": [
+        {
+          "name": "GET /api/admin/organizations - Success (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/admin/organizations - Success (201)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{baseUrl}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Gulshan Diagnostic Center\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/admin/organizations - Validation Failed (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{baseUrl}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"A\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/admin/organizations - Duplicate Name (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{baseUrl}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dhaka Central Clinic\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/admin/organizations/:id - Success (200)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{baseUrl}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dhaka Central Clinic Renamed\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations/{{testOrgId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations", "{{testOrgId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/admin/organizations/:id - Not Found (404)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{baseUrl}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Non-existent Clinic\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/organizations/ffffffff-ffff-ffff-ffff-ffffffffffff",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "organizations", "ffffffff-ffff-ffff-ffff-ffffffffffff"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Staff Management",
+      "item": [
+        {
+          "name": "GET /api/admin/staff - Success (200)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "staff"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/admin/staff - Success (201, returns temporary_password)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{baseUrl}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"reception@centralclinic.local\",\n  \"full_name\": \"Mitu Receptionist\",\n  \"organization_id\": \"{{testOrgId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "staff"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/admin/staff - Validation Failed (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{baseUrl}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"invalid-email\",\n  \"full_name\": \"A\",\n  \"organization_id\": \"invalid-uuid\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "staff"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "POST /api/admin/staff - Org Not Found (404)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{baseUrl}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"new@test.local\",\n  \"full_name\": \"Valid Name\",\n  \"organization_id\": \"ffffffff-ffff-ffff-ffff-ffffffffffff\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/staff",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "staff"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PATCH /api/admin/staff/:id - Deactivate Staff (200)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Origin", "value": "{{baseUrl}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/admin/staff/{{testStaffId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "admin", "staff", "{{testStaffId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

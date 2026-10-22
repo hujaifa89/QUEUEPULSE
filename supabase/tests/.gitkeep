@@ -1,0 +1,2 @@
+# pgTAP tests directory
+# Database tests run with `supabase test db`
