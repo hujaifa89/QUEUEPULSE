@@ -79,43 +79,44 @@ export function validateEnv(
   return publicResult.data as Env;
 }
 
-// In client environments, prevent access to server-only variables
-function createEnvProxy(parsedEnv: Partial<Env>): Env {
-  const isServer = typeof window === 'undefined';
-  return new Proxy(parsedEnv as Env, {
-    get(target, prop: string) {
-      if (!isServer && prop in serverEnvSchema.shape) {
-        throw new Error(`Security Error: Cannot access server-only environment variable "${prop}" on the client.`);
-      }
-      return target[prop as keyof Env];
-    },
-  });
+// Next.js only inlines NEXT_PUBLIC_* variables into client bundles when they are
+// referenced literally, so collect them explicitly instead of passing process.env.
+function readRawEnv(): Record<string, string | undefined> {
+  return {
+    ...process.env,
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+  };
 }
 
-// Parse at start-up if not in a pure test mock environment where process.env might be empty
 let cachedEnv: Env | null = null;
 
 export function getEnv(): Env {
   if (!cachedEnv) {
-    cachedEnv = validateEnv(process.env);
+    cachedEnv = validateEnv(readRawEnv());
   }
   return cachedEnv;
 }
 
-// Default export / named export
-export const env = (function () {
-  // If running in Node or browser runtime during execution, validate process.env
-  // When running unit tests specifically for env validation, we let tests invoke validateEnv directly
-  if (process.env.NODE_ENV === 'test' && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    // Return proxy with fallback for unit test harness
-    return createEnvProxy(process.env as unknown as Partial<Env>);
-  }
-  try {
-    const validated = validateEnv(process.env);
-    return createEnvProxy(validated);
-  } catch (error) {
-    // Fail immediately at start-up
-    console.error((error as Error).message);
-    throw error;
-  }
-})();
+// Validation is deferred until a variable is first read (at request time), so that
+// `next build` can import route modules without runtime secrets being present.
+// In client environments, access to server-only variables is rejected.
+export const env = new Proxy({} as Env, {
+  get(_target, prop: string) {
+    const isServer = typeof window === 'undefined';
+    if (!isServer && prop in serverEnvSchema.shape) {
+      throw new Error(`Security Error: Cannot access server-only environment variable "${prop}" on the client.`);
+    }
+    // Unit test harness without env configured: fall back to raw values
+    if (process.env.NODE_ENV === 'test' && !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+      return readRawEnv()[prop];
+    }
+    try {
+      return getEnv()[prop as keyof Env];
+    } catch (error) {
+      console.error((error as Error).message);
+      throw error;
+    }
+  },
+});

@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@/lib/supabase/browser';
 import { Button, TextField, Banner, LanguageSwitcher } from '@/components/ui';
 import { t, type Locale } from '@/i18n';
 
-export default function LoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get('redirect') || '';
@@ -178,5 +178,14 @@ export default function LoginPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+// useSearchParams() requires a Suspense boundary so the page can be prerendered at build time
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginForm />
+    </Suspense>
   );
 }
