@@ -5,6 +5,7 @@ export interface BannerProps {
   title?: string;
   children: React.ReactNode;
   className?: string;
+  onClose?: () => void;
 }
 
 export const Banner: React.FC<BannerProps> = ({
@@ -12,6 +13,7 @@ export const Banner: React.FC<BannerProps> = ({
   title,
   children,
   className = '',
+  onClose,
 }) => {
   const variantStyles = {
     info: 'bg-teal-50 border-teal-200 text-teal-900',
@@ -33,11 +35,23 @@ export const Banner: React.FC<BannerProps> = ({
       aria-live={variant === 'danger' ? 'assertive' : 'polite'}
       className={`w-full rounded-lg border p-4 text-sm flex flex-col space-y-1 ${variantStyles[variant]} ${className}`}
     >
-      <div className="flex items-center space-y-0.5 gap-2 font-semibold">
-        <span className="text-xs uppercase tracking-wider px-2 py-0.5 rounded border border-current opacity-80">
-          {badgeLabels[variant]}
-        </span>
-        {title && <span>{title}</span>}
+      <div className="flex items-center justify-between space-y-0.5 gap-2 font-semibold">
+        <div className="flex items-center gap-2">
+          <span className="text-xs uppercase tracking-wider px-2 py-0.5 rounded border border-current opacity-80">
+            {badgeLabels[variant]}
+          </span>
+          {title && <span>{title}</span>}
+        </div>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close notification"
+            className="text-xs opacity-60 hover:opacity-100 p-1 rounded"
+          >
+            ✕
+          </button>
+        )}
       </div>
       <div className="text-sm leading-relaxed">{children}</div>
     </div>

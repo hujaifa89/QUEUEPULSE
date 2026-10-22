@@ -1,4 +1,5 @@
 import { createServiceClient } from '@/lib/supabase/service';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { maskPhone } from '@/features/queue/schemas';
 import { env } from '@/lib/env';
 
@@ -54,8 +55,6 @@ export class WebPushSender implements PushSender {
   private init() {
     if (this.initialized) return;
     try {
-      // Lazy load web-push on demand
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
       const webpush = require('web-push');
       webpush.setVapidDetails(
         env.VAPID_SUBJECT,
@@ -76,7 +75,6 @@ export class WebPushSender implements PushSender {
     payload: string,
   ): Promise<unknown> {
     this.init();
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const webpush = require('web-push');
     return webpush.sendNotification(subscription, payload);
   }
@@ -85,8 +83,7 @@ export class WebPushSender implements PushSender {
 export interface ProcessOutboxOptions {
   pushSender?: PushSender;
   smsProvider?: SmsProvider;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  supabaseClient?: any;
+  supabaseClient?: SupabaseClient;
   maxBatch?: number;
 }
 
@@ -198,8 +195,7 @@ export async function processOutbox(
 
         sentCount += 1;
       } catch (err: unknown) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const statusCode = (err as any)?.statusCode;
+        const statusCode = (err && typeof err === 'object' && 'statusCode' in err) ? (err as { statusCode?: number }).statusCode : undefined;
         const errString = String(err);
 
         // 404 or 410: expired or invalid subscription -> delete it per requirement 5

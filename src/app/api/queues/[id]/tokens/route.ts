@@ -46,8 +46,8 @@ export const POST = withAuth<{ id: string }>(
       .single();
 
     const serviceDate = Array.isArray(queue?.queue_state)
-      ? queue?.queue_state[0]?.service_date
-      : (queue?.queue_state as { service_date?: string } | null)?.service_date;
+      ? (queue?.queue_state[0] as { service_date?: string } | undefined)?.service_date
+      : (queue?.queue_state as unknown as { service_date?: string } | null)?.service_date;
 
     // Trigger asynchronous outbox processing after commit (requirement 6)
     processOutbox(queueId).catch((err) => {

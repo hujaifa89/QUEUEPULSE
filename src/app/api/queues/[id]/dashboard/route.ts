@@ -103,6 +103,15 @@ export const GET = withAuth<{ id: string }>(
 
     const recalledTokenIds = new Set((recallAudit || []).map((a) => a.token_id));
 
+    const maskedServing = servingToken
+      ? { ...servingToken, phone: maskPhone(servingToken.phone) }
+      : null;
+
+    const maskedWaiting = (waitingTokens || []).map((t) => ({
+      ...t,
+      phone: maskPhone(t.phone),
+    }));
+
     const maskedSkipped = (skippedTokens || []).map((t) => ({
       ...t,
       phone: maskPhone(t.phone),

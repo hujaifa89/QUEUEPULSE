@@ -270,7 +270,7 @@ export function VisitorLiveClient({ code }: VisitorLiveClientProps) {
 
       const subscription = await reg.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
+        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey) as unknown as BufferSource,
       });
 
       const p256dhKey = subscription.getKey('p256dh');

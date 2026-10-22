@@ -6,13 +6,13 @@ import { pushRateLimiter } from '@/features/notifications/rateLimiter';
 
 export const dynamic = 'force-dynamic';
 
-export const pushSubscriptionSchema = z.object({
+const pushSubscriptionSchema = z.object({
   endpoint: z.string().url('Invalid endpoint URL'),
   p256dh: z.string().min(1, 'p256dh key is required'),
   auth: z.string().min(1, 'auth secret is required'),
 });
 
-export const POST = withHttpHandler<{ code: string }>(async (request, context) => {
+export const POST = withHttpHandler<{ params: { code: string } }>(async (request, context) => {
   const code = context?.params?.code;
   if (!code) {
     throw new AppError('NOT_FOUND', 404, 'Token code not provided');
