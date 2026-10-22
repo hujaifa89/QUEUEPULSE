@@ -22,7 +22,7 @@
     "benchmark:latency": "tsx scripts/load/realtime-latency.ts"
   },
   "dependencies": {
-    "@supabase/ssr": "^0.5.1",
+    "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.45.6",
     "next": "^14.2.15",
     "qrcode.react": "^3.1.0",
